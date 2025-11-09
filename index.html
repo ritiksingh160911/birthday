@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Surpriseeee!!! Babbyyyy 💖</title>
+  <meta name="description" content="Surprise birthday page - single file, mobile friendly, multi-cake cutting (realistic CSS cake)" />
+  <style>
+    :root{--bg1:#2b0218;--bg2:#3b0026;--accent:#ff6b9a;--accent2:#ff324b;--card:#fff5f8}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;color:#fff;-webkit-font-smoothing:antialiased}
+
+    /* background gradient */
+    body{background:radial-gradient(circle at 10% 10%, rgba(255,107,154,0.06), transparent 8%), radial-gradient(circle at 90% 90%, rgba(255,50,75,0.04), transparent 10%), linear-gradient(135deg,var(--bg1),var(--bg2));overflow:hidden}
+
+    /* layout */
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+    .container{width:100%;max-width:980px;background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));border-radius:16px;padding:18px;backdrop-filter:blur(6px);box-shadow:0 12px 40px rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.04);text-align:center}
+    h1{margin:6px 0 8px;font-size:clamp(20px,5vw,44px);line-height:1}
+    .subtitle{font-size:14px;opacity:0.95;margin-bottom:10px}
+
+    /* buttons */
+    .btn{background:linear-gradient(90deg,var(--accent),var(--accent2));border:0;padding:12px 22px;border-radius:999px;color:white;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 12px 30px rgba(255,50,75,0.18)}
+    .btn.small{padding:8px 14px;font-size:14px}
+
+    /* main card & slides */
+    .card{margin-top:12px;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));position:relative}
+    .slideshow{position:relative;height:420px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg, rgba(0,0,0,0.06), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center}
+    .slide{position:absolute;inset:0;padding:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transform:translateY(12px);transition:all .6s cubic-bezier(.2,.9,.2,1)}
+    .slide.active{opacity:1;transform:translateY(0)}
+    .slide .heading{font-weight:800;font-size:20px;margin-bottom:10px}
+    .slide .text{max-width:860px;font-size:18px;line-height:1.45;color:var(--card);min-height:72px}
+
+    /* CTA row */
+    .cta-row{display:flex;gap:12px;justify-content:center;align-items:center;margin-top:14px;flex-wrap:wrap}
+
+    /* hearts layer */
+    .hearts-layer{position:fixed;inset:0;pointer-events:none;z-index:40}
+    .heart{position:absolute;width:24px;height:24px;transform:rotate(-45deg);opacity:0.9}
+    .heart:before,.heart:after{content:'';position:absolute;background:currentColor;border-radius:50%;}
+    .heart:before{width:24px;height:24px;left:12px;top:0}
+    .heart:after{width:24px;height:24px;left:0;top:12px}
+
+    /* sparkles */
+    .sparkle{position:fixed;width:8px;height:8px;border-radius:50%;pointer-events:none;opacity:0;transform:scale(0);z-index:45}
+
+    /* overlay cake panel */
+    .overlay{position:fixed;inset:0;background:linear-gradient(180deg, rgba(0,0,0,0.7), rgba(0,0,0,0.5));display:flex;align-items:center;justify-content:center;z-index:80;visibility:hidden;opacity:0;transition:all .36s ease}
+    .overlay.show{visibility:visible;opacity:1}
+    .cake-panel{width:100%;max-width:760px;background:linear-gradient(180deg,#fff6fb,#fff0f6);border-radius:18px;padding:18px;text-align:center;color:#3b0226;box-shadow:0 30px 80px rgba(0,0,0,0.45)}
+
+    .cake-stage{position:relative;width:100%;height:360px;display:flex;align-items:center;justify-content:center}
+
+    /* realistic layered CSS cake - pink & white */
+    .real-cake{position:relative;width:320px;height:220px}
+
+    /* cake plate */
+    .plate{position:absolute;left:50%;transform:translateX(-50%);bottom:-18px;width:420px;height:40px;background:radial-gradient(circle at 50% 20%, #fff,#ffeef6);border-radius:50px;box-shadow:0 8px 24px rgba(0,0,0,0.25)}
+
+    /* bottom layer */
+    .layer{position:absolute;left:50%;transform:translateX(-50%);width:86%;height:68px;border-radius:12px;background:linear-gradient(180deg,#ffdce6,#ffc0d7);box-shadow:0 10px 30px rgba(0,0,0,0.2);border:1px solid rgba(255,255,255,0.35)}
+    .layer.bottom{bottom:0}
+
+    /* middle layer */
+    .layer.mid{bottom:60px;width:78%;height:58px;background:linear-gradient(180deg,#ffe6f0,#ffd0e6);box-shadow:0 8px 22px rgba(0,0,0,0.18)}
+
+    /* top layer */
+    .layer.top{bottom:110px;width:64%;height:52px;background:linear-gradient(180deg,#fff8fb,#ffeef6);box-shadow:0 6px 18px rgba(0,0,0,0.14)}
+
+    /* icing drip (top) */
+    .icing-top{position:absolute;left:50%;transform:translateX(-50%);bottom:150px;width:64%;height:28px;background:linear-gradient(180deg,#fff0f6,#ffd6e6);border-radius:20px 20px 10px 10px;filter:drop-shadow(0 8px 14px rgba(255,107,154,0.06))}
+    .icing-drip{position:absolute;background:#ffd6e6;border-radius:50%;}
+    .drip1{width:20px;height:40px;left:10%;bottom:-12px}
+    .drip2{width:28px;height:52px;left:30%;bottom:-22px}
+    .drip3{width:18px;height:36px;left:52%;bottom:-10px}
+    .drip4{width:24px;height:46px;left:72%;bottom:-18px}
+
+    /* decorative rosettes */
+    .rosette{position:absolute;width:18px;height:18px;border-radius:50%;background:linear-gradient(180deg,#ffb6c1,#ff8fb3);box-shadow:0 4px 10px rgba(0,0,0,0.12)}
+    .ros1{left:20%;bottom:128px}
+    .ros2{left:30%;bottom:128px}
+    .ros3{left:42%;bottom:128px}
+    .ros4{left:58%;bottom:128px}
+    .ros5{left:70%;bottom:128px}
+
+    /* candle group */
+    .candles{position:absolute;left:50%;transform:translateX(-50%);bottom:184px;display:flex;gap:10px}
+    .candle{width:10px;height:30px;background:#fff;border-radius:5px;position:relative;box-shadow:inset 0 -3px 0 rgba(0,0,0,0.06)}
+    .flame{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:12px;height:16px;background:radial-gradient(circle,#ffd54a,#ff6b6b);border-radius:50%;filter:drop-shadow(0 6px 12px rgba(255,80,120,0.15));animation:flick 0.35s infinite alternate}
+    @keyframes flick{0%{transform:translateX(-50%) scale(1)}100%{transform:translateX(-50%) scale(1.16)}}
+
+    /* cake top text */
+    .cake-text{position:absolute;left:50%;transform:translateX(-50%);bottom:160px;width:68%;text-align:center;font-family:'Brush Script MT', 'Brush Script Std', cursive;font-size:20px;color:#b3003b;text-shadow:0 4px 10px rgba(255,255,255,0.7)}
+
+    /* knife & slice visuals */
+    .knife{position:absolute;right:-40px;top:140px;width:140px;height:22px;background:linear-gradient(180deg,#e6e6e6,#cfcfcf);border-radius:8px;transform:rotate(-12deg);box-shadow:0 8px 18px rgba(0,0,0,0.18)}
+    .slice-piece{position:absolute;left:50%;top:120px;width:96px;height:90px;background:linear-gradient(180deg,#fff0f6,#ffd6e6);border-radius:8px;transform-origin:top center;transform:translateX(-50%)}
+
+    .panel-controls{display:flex;gap:12px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+    .msg{font-weight:800;margin-top:12px}
+    .small{font-size:13px;opacity:0.95}
+
+    /* ending */
+    .ending{font-size:48px;font-weight:900;letter-spacing:1px;opacity:0;transform:scale(.9);transition:all .65s cubic-bezier(.2,.9,.2,1);color:var(--card)}
+    .ending.show{opacity:1;transform:scale(1);text-shadow:0 12px 40px rgba(255,50,75,0.28)}
+
+    /* confetti canvas */
+    #confettiCanvas{position:fixed;left:0;top:0;pointer-events:none;z-index:75}
+
+    @media (max-width:640px){
+      .slideshow{height:520px}
+      .real-cake{width:260px;height:180px}
+      .cake-stage{height:300px}
+      .ending{font-size:34px}
+    }
+    /* ===== Mobile fixes ===== */
+@media (max-width:640px){
+  .slideshow {
+    height: auto; /* let it expand naturally */
+    min-height: 400px; /* optional */
+  }
+
+  .cta-row {
+    flex-direction: column; /* stack buttons vertically */
+    gap: 8px;
+    margin-top: 12px;
+    padding-bottom: 12px; /* add some space at bottom */
+  }
+
+  .btn.small {
+    font-size: 14px;
+    padding: 10px 18px;
+  }
+
+  .card {
+    max-height: 90vh; /* prevent it from covering the whole screen */
+    overflow-y: auto;  /* allow scrolling if content is taller */
+    padding-bottom: 16px;
+  }
+
+  #cakeOverlay {
+    overflow-y: auto;
+    padding: 10px;
+  }
+}
+
+  </style>
+</head>
+<body>
+
+  <div class="hearts-layer" id="heartsLayer" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <div class="container" role="main">
+      <h1>Surpriseeee!!! Babbyyyy 💖</h1>
+
+      <div class="card" id="mainCard">
+        <div style="font-size:18px;font-weight:700">Click to reveal your surprise</div>
+        <button id="openBtn" class="btn" aria-label="Open Surprise">Open Surprise</button>
+
+        <div id="controls" style="display:none;margin-top:12px">
+          <div class="slideshow" id="slideshow">
+            <!-- Slides -->
+            <div class="slide" data-index="0">
+              <div class="heading">Its your birthday babbyyy</div>
+              <div class="text" data-text="Happy Birthday Babyyy 💞 teri saari wishes puri ho and tu ese hi hmesha khus rhe hope mei tujhe iss birthday hug kr paata kiss kr paata but next birthday we will celebrate together i love you meri jaan today is your day darling and im very lucky that i have you you deserve everythink baby and kitna bhi kru hmesha kam hi lgta hei tu bhoootttt jyada deserve krti hei meri jaan and ill try tujhe sb de paau i love you my princess and happyyyyy birthdayyyy darling "></div>
+            </div>
+            <div class="slide" data-index="1">
+              <div class="heading">YOU❤️</div>
+              <div class="text" data-text=" my princess!! you are my first thought of morning and you are my last thought of the day jb tk tujhe sochu na mujhe neend nhi aati raat mei.. jb tk teri subey photos na dekhu meri subey achhi nhi jaati.. jabtk tujhse baat na ho mera din acha nhi jaata you are my princess babbyyy without You❤️ i cant imagine my life.. without You❤️ im nothing darling. you are my strength, you are my hope, you are my dream ,You❤️ are mine You❤️are my girl, my baby, my darling.. whenever i see you i feel like yes im that luckiest guy who got Diamond.. happpyyyy vaalaa birthday babbyyy  "></div>
+            </div>
+            <div class="slide" data-index="2">
+              <div class="heading">Your Smile</div>`
+              <div class="text" data-text="Your smilee ooooo Godddd jb tu smile krti hei itnii jyada pyaari lgti hei na ki chaand bhi tere aage feeka lgta hei you smile is priceless babe i can do whatever make you smile smile krte time tere cheeks bhoootttt jyaadaa sundar lgta hei esa lgta hei ki kiss krta rhu bs and your lips jitna bhi bolu kam hi specially your lower lip and keep smiling baby today is your birthday smileeee"></div>
+            </div>
+            <div class="slide" data-index="3">
+              <div class="heading">FOREVER</div>
+              <div class="text" data-text="you are my forever.. Forever means Forever no matter ky conditions hei im with you forever and this is my promise to you that i always going to be with you and forever and ill always and forever hold your hands.. you are my everythink baby ,my reason of smile and tujhe hamesha khush rkhunga foreverrrrr cuz you are my princesss, you r my Love and Forever ill keep you with me dekhna tu and forever we will going to celebrate your birthday babee happyyy birthday meri phuljhadi "></div>
+            </div>
+            <div class="slide" data-index="4">
+              <div class="heading">Dreams</div>
+              <div class="text" data-text="Let's chase our dreams together bigger, better, together.. i want us to grow together and achieve every dream evrything that we talk.. my dream is to tke you at my home as meri ghar ki laxmi i know many dreams are difficult to achieve but every dream is possible to achieve jese sapne m mei tera hath pakdta hu and one day ill going to hold in real a dream to celebrate your birthday like a festival together a dream to sit together and talk for hours and hours and all these dreams going to achieve soon and i know here i missed alot of dreams and topics but every dream that yo want ki vo real ho jo m chahta hu ki real ho sab achieve hoge i love you "></div>
+            </div>
+            <div class="slide" data-index="5">
+              <div class="heading">Kisses</div>
+              <div class="text" data-text="A thousand kisses won't be enough i wish ki mei udhr tere pass hota kiss kr paata or btaa paata ki tu mere liye kini important hei and im trying ki tujhe itna pyaar kru itna pyaar kru ki kisi ne bhi kisi or se naa kiya ho aaj mei tujhe virtual kiss hi kr skta hu and i really want ki tujhe real mei kiss kr paata tere birthday k din or tujhe hug kr paata "></div>
+            </div>
+            <div class="slide" data-index="6">
+              <div class="heading">Celebrate</div>
+              <div class="text" data-text="so lets celebrate your birthday babbyy real cake to nhi cuz longgg distance but meine virtual cake bnaya hei for you so lets cut and celebrate this pricious moment "></div>
+            </div>
+            <div class="slide" data-index="7">
+              <div class="heading">Last but not least</div>
+              <div class="text" data-text="a very very happiest birthday darling you are my everythink you are the only person jisse mei sb kuchh share krta hu khul k baat krta hu without any trust issues. mene kbhi socha bhi nhi tha ki ek din tu meri life mei aayegi or fir meri life itni achi sound krne lgegi.. im glad ki tu meri life mei , tu mere sath hei , im lucky that you are mine only mine.. every moment i spend with you it feels like dream ypour are sooo pricious for me darling i love you baby and happyyy birthdayyyy.. now Ready for cake?"></div>
+            </div>
+          </div>
+
+          <div class="cta-row">
+            <button id="prevBtn" class="btn small" aria-label="Previous">Prev</button>
+            <button id="nextBtn" class="btn small" aria-label="Next">Next</button>
+
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+              <button id="openCakeBtn" class="btn small" aria-label="Cut the Cake">Cut the Cake 🍰</button>
+              <div class="small">(Opens full-screen cake cutting)</div>
+            </div>
+          </div>
+
+          <div style="margin-top:16px">
+            <div id="endingText" class="ending">I Love You❤️</div>
+          </div>
+
+        </div>
+
+        <audio id="music" preload="auto" loop>
+        <source src="./assets/music/Tum_hi_ho.mp3" type="audio/mpeg">
+        </audio>
+
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Confetti canvas (global) -->
+  <canvas id="confettiCanvas"></canvas>
+
+  <!-- Cake overlay panel (same file, full-screen) -->
+  <div class="overlay" id="cakeOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="cake-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <div style="font-weight:900;font-size:18px">Virtual Cake — Cut as many times as you want</div>
+        <button id="closeCake" class="btn small" style="background:transparent;color:var(--accent);border:1px solid rgba(0,0,0,0.06)">Close</button>
+      </div>
+
+      <div class="cake-stage">
+        <div class="real-cake" id="realCake">
+          <div class="plate" aria-hidden="true"></div>
+          <div class="layer bottom" aria-hidden="true"></div>
+          <div class="layer mid" aria-hidden="true"></div>
+          <div class="icing-top" aria-hidden="true">
+            <div class="icing-drip drip1"></div>
+            <div class="icing-drip drip2"></div>
+            <div class="icing-drip drip3"></div>
+            <div class="icing-drip drip4"></div>
+          </div>
+          <div class="layer top" aria-hidden="true"></div>
+
+          <!-- decorative rosettes -->
+          <div class="rosette ros1"></div>
+          <div class="rosette ros2"></div>
+          <div class="rosette ros3"></div>
+          <div class="rosette ros4"></div>
+          <div class="rosette ros5"></div>
+
+          <!-- candles group -->
+          <div class="candles" aria-hidden="true">
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+            <div class="candle"><div class="flame"></div></div>
+          </div>
+
+          <!-- cake top text -->
+          <div class="cake-text">I Love You My Girl 💖</div>
+
+          <!-- slice (animated when cut) -->
+          <div class="slice-piece" id="slicePiece" aria-hidden="true"></div>
+
+          <!-- knife -->
+          <div class="knife" id="knifeEl" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="panel-controls">
+        <div class="msg" id="cakeMsg">Happy Birthday Babyyy 💞</div>
+        <div class="small">Tap the cake to cut a piece.. keep cutting again and again! When you're done, tap "Celebrate" to see the ending</div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:12px">
+        <button id="celebrateBtn" class="btn small">Celebrate 🎉</button>
+        <button id="resetCake" class="btn small" style="background:transparent;border:1px solid rgba(0,0,0,0.06);color:var(--card)">Reset Cake</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Shortcuts
+    const $ = s => document.querySelector(s);
+    const $$ = s => Array.from(document.querySelectorAll(s));
+
+    const openBtn = $('#openBtn');
+    const controls = $('#controls');
+    const music = $('#music');
+    const slideshow = $('#slideshow');
+    const slides = $$('.slide');
+    const prevBtn = $('#prevBtn');
+    const nextBtn = $('#nextBtn');
+    const openCakeBtn = $('#openCakeBtn');
+    const cakeOverlay = $('#cakeOverlay');
+    const cake = $('#realCake');
+    const slice = $('#slicePiece');
+    const knife = $('#knifeEl');
+    const closeCake = $('#closeCake');
+    const celebrateBtn = $('#celebrateBtn');
+    const resetCake = $('#resetCake');
+    const endingText = $('#endingText');
+    const heartsLayer = $('#heartsLayer');
+    const confettiCanvas = $('#confettiCanvas');
+
+    let started = false; let current = 0; let autoTimer = null; let cuts = 0; const maxCuts = 8;
+
+    // floating hearts background: spawn some subtle moving hearts continuously
+    function createBgHeart(x){
+      const el = document.createElement('div'); el.className='heart';
+      el.style.left = (x ?? Math.random()*100) + 'vw';
+      el.style.top = (70 + Math.random()*30) + 'vh';
+      el.style.width = (12 + Math.random()*28) + 'px';
+      el.style.height = el.style.width;
+      el.style.color = Math.random()>0.5? 'rgba(255,107,154,0.9)':'rgba(255,50,75,0.9)';
+      el.style.opacity = 0.6 + Math.random()*0.4;
+      const dur = 8000 + Math.random()*9000;
+      el.style.transition = `transform ${dur}ms linear, opacity ${dur}ms linear`;
+      heartsLayer.appendChild(el);
+      // animate upwards
+      requestAnimationFrame(()=>{ el.style.transform = `translateY(-120vh) rotate(${(Math.random()*40-20)}deg)`; el.style.opacity = 0; });
+      setTimeout(()=> el.remove(), dur+120);
+    }
+    // spawn a few at start
+    for(let i=0;i<10;i++) createBgHeart(i*7 + Math.random()*6);
+    // keep them coming
+    setInterval(()=> createBgHeart(), 1600);
+
+    // sparkles
+    function spawnSparkle(x,y){ const el = document.createElement('div'); el.className='sparkle'; el.style.left=(x-4)+'px'; el.style.top=(y-4)+'px'; el.style.background = Math.random()>0.5? 'radial-gradient(circle,#fff,#ffd1e0)':'radial-gradient(circle,#fff,#ff9fb8)'; document.body.appendChild(el); const dur=600+Math.random()*400; el.animate([{transform:'scale(0)',opacity:0},{transform:'scale(1.2)',opacity:1},{transform:'scale(0.2)',opacity:0}],{duration:dur,easing:'ease-out'}); setTimeout(()=> el.remove(), dur+50); }
+
+    // confetti
+    const ctx = confettiCanvas.getContext('2d'); function resizeCanvas(){ confettiCanvas.width = innerWidth; confettiCanvas.height = innerHeight; } resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+    function startConfetti(){ const pieces=[]; const colors=['#ff6b9a','#ff324b','#ffd2e0','#ffb3cc','#ff7fa0']; for(let i=0;i<160;i++){ pieces.push({ x: Math.random()*confettiCanvas.width, y: Math.random()*-confettiCanvas.height, w: random(6,14), h: random(6,12), vx: random(-1.6,1.6), vy: random(2,6), color: colors[Math.floor(Math.random()*colors.length)], rot: random(0,360), vr: random(-0.15,0.15) }); } let t=0; function loop(){ ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height); for(const p of pieces){ p.x += p.vx; p.y += p.vy; p.vy += 0.02; p.rot += p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.color; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h); ctx.restore(); } t++; if(t<240) requestAnimationFrame(loop); else ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);} loop(); }
+    function random(a,b){ return a + Math.random()*(b-a); }
+
+    // typing effect
+    function typeText(el,text,speed=24){ el.innerHTML=''; el.classList.add('typing'); return new Promise(res=>{ let i=0; const t=setInterval(()=>{ el.innerHTML = text.slice(0,i+1); i++; if(i>=text.length){ clearInterval(t); el.classList.remove('typing'); res(); } }, speed); }); }
+
+    async function showSlide(i){ slides.forEach(s=>s.classList.remove('active')); const s=slides[i]; s.classList.add('active'); const txt=s.querySelector('.text'); if(txt){ const text = txt.getAttribute('data-text')||txt.textContent||''; await typeText(txt,text,26); } if(i===slides.length-1) endingText.classList.add('show'); else endingText.classList.remove('show'); }
+
+    function nextSlide(){ current=(current+1)%slides.length; showSlide(current); }
+    function prevSlide(){ current=(current-1+slides.length)%slides.length; showSlide(current); }
+
+    prevBtn.addEventListener('click', ()=>{ prevSlide(); resetAuto(); });
+    nextBtn.addEventListener('click', ()=>{ nextSlide(); resetAuto(); });
+
+    // open surprise
+    openBtn.addEventListener('click', async ()=>{
+      if(started) return; started=true; openBtn.disabled=true; openBtn.style.opacity=0.9; controls.style.display='block'; if(music && music.querySelector('source') && music.querySelector('source').src){ music.play().catch(()=>{}); }
+      await showSlide(0); startAuto();
+      document.addEventListener('click',(e)=>{ if(!e.target.closest('.btn') && !e.target.closest('input')) createTapHeart(e.clientX,e.clientY); });
+      document.addEventListener('mousemove',(e)=>{ if(e.buttons===1) spawnSparkle(e.clientX,e.clientY); });
+      document.addEventListener('touchmove',(e)=>{ const t=e.touches[0]; spawnSparkle(t.clientX,t.clientY); },{passive:true});
+    });
+
+    // hearts on tap (foreground smaller hearts)
+    function createTapHeart(x,y){ const el=document.createElement('div'); el.className='heart'; el.style.left = x + 'px'; el.style.top = y + 'px'; el.style.width = (18 + Math.random()*18)+'px'; el.style.height = el.style.width; el.style.color = Math.random()>0.5? 'rgba(255,107,154,0.95)':'rgba(255,50,75,0.95)'; document.body.appendChild(el); const dur = 1200 + Math.random()*1000; el.animate([{ transform:'translateY(0) scale(.6) rotate(-45deg)', opacity:1 },{ transform:'translateY(-140px) scale(1.1) rotate(-25deg)', opacity:0 }],{ duration:dur, easing:'cubic-bezier(.2,.9,.2,1)'}); setTimeout(()=> el.remove(), dur+50); }
+
+    // cake cutting logic
+    function cutCake(){ if(cuts >= maxCuts) return; cuts++; // knife swing
+      knife.animate([{ transform:'rotate(-12deg) translateX(0)' },{ transform:'rotate(36deg) translateX(-160px)' }],{ duration:420, easing:'cubic-bezier(.2,.9,.2,1)'});
+      // slice animate
+      slice.animate([{ transform:'translateX(-50%)' },{ transform:`translateX(${60 + cuts*10}px) rotate(${6 + cuts*2}deg) scale(${1 - cuts*0.06})`, opacity:0 }],{ duration:520, easing:'ease-in' });
+      // confetti burst and small heart spawns
+      startConfetti(); for(let i=0;i<6;i++){ setTimeout(()=> createTapHeart(window.innerWidth*Math.random(), window.innerHeight*0.6 + Math.random()*120), i*90); }
+      $('#cakeMsg').textContent = `Cut ${cuts} / ${maxCuts} — I Love You My Girl 💖`;
+      if(cuts >= maxCuts){ setTimeout(()=> $('#cakeMsg').textContent = 'All pieces cut — press Celebrate!', 700); }
+    }
+
+    cake.addEventListener('click', ()=> cutCake()); cake.addEventListener('touchstart', ()=> cutCake(), {passive:true});
+
+    // overlay controls
+    openCakeBtn.addEventListener('click', ()=>{ cakeOverlay.classList.add('show'); cakeOverlay.setAttribute('aria-hidden','false'); });
+    closeCake.addEventListener('click', ()=>{ cakeOverlay.classList.remove('show'); cakeOverlay.setAttribute('aria-hidden','true'); });
+
+    celebrateBtn.addEventListener('click', ()=>{ startConfetti(); endingText.classList.add('show'); for(let i=0;i<12;i++){ setTimeout(()=> createTapHeart(window.innerWidth*Math.random(), window.innerHeight*0.75 + Math.random()*120), i*120); } });
+    resetCake.addEventListener('click', ()=>{ cuts=0; $('#cakeMsg').textContent='Happy Birthday Babyyy 💞'; endingText.classList.remove('show'); });
+
+    // keyboard navigation
+    document.addEventListener('keydown',(e)=>{ if(!started) return; if(e.key==='ArrowRight') nextSlide(); if(e.key==='ArrowLeft') prevSlide(); if(e.key==='Escape'){ cakeOverlay.classList.remove('show'); cakeOverlay.setAttribute('aria-hidden','true'); } });
+
+    // make slides visible
+    slides.forEach(s=>s.style.display='block');
+    // advance slide on tap
+    slideshow.addEventListener('click', ()=>{ if(!started) return; nextSlide(); resetAuto(); });
+
+    // util resize
+    window.addEventListener('resize', resizeCanvas);
+
+  </script>
+  <script>
+  window.addEventListener("load", () => {
+    const music = document.getElementById("music");
+    music.volume = 0.5; // set lower volume
+    const playPromise = music.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(() => {
+        // browser blocked autoplay, show a play button
+        const btn = document.createElement("button");
+        btn.textContent = "Tap to Play Music 🎵";
+        btn.style.position = "fixed";
+        btn.style.bottom = "20px";
+        btn.style.left = "50%";
+        btn.style.transform = "translateX(-50%)";
+        btn.style.padding = "10px 20px";
+        btn.style.background = "#ff5c8d";
+        btn.style.color = "white";
+        btn.style.border = "none";
+        btn.style.borderRadius = "8px";
+        btn.style.fontSize = "18px";
+        btn.style.zIndex = "9999";
+        document.body.appendChild(btn);
+        btn.onclick = () => {
+          music.play();
+          btn.remove();
+        };
+      });
+    }
+  });
+</script>
+</body>
+</html>
